@@ -7,7 +7,7 @@ BASE_URL = "https://www.googleapis.com/books/v1/volumes"
 favourites = []
 readed = []
 
-def search_books_by_author(author, many_books=0):
+def search_books_by_author(author, many_not=0):
     # Формируем запрос к Google Books API
     params = {
         'q': f'inauthor:{author}',  # Поиск книг по автору
@@ -31,9 +31,18 @@ def search_books_by_author(author, many_books=0):
                     published_date = item['volumeInfo'].get('publishedDate', 'Неизвестно')
                     print(
                         f"- Название: {title}\n  Автор(ы): {', '.join(authors)}\n  Дата публикации: {published_date}\n")
-
-                    answers_to_add = (input("Хотите ли вы добавить эту книгу в список избранных или уже прочитанного?(да/нет"))
+                    answers_to_add = (input("Хотите ли вы добавить эту книгу в список избранных или уже прочитанного?(да/нет)"))
                     if answers_to_add == "нет":
+                        many_not += 1
+                        if many_not <= 3:
+                            continue
+                        else:
+                            more = input(("Хотите больше книг этого автора?да/нет"))
+                            if more == "да":
+                                continue
+                            elif more == "нет":
+                                print("OK")
+                                break
                         continue
                     elif answers_to_add == "да":
                         add_to = input("куда вы хотите добавить: избранное или прочитанное?")
@@ -47,16 +56,7 @@ def search_books_by_author(author, many_books=0):
                             print("Не пиши ерунду")
                     else:
                         print("Не пиши ерунду")
-                    many_books += 1
-                    if many_books <= 3:
-                        continue
-                    else:
-                        more = input(("Хотите больше книг этого автора?да/нет"))
-                        if more == "да":
-                            continue
-                        elif more == "нет":
-                            print("OK")
-                            break
+
 
             else:
                 print(f"Книги автора '{author}' не найдены.")
@@ -68,15 +68,14 @@ def search_books_by_author(author, many_books=0):
 
 
 def fav(favourites, readed):
-    fav_or_readed = input("Хотите посмотреть избранное или прочитанное?.Напишите да или нет")
+    fav_or_readed = input("Хотите посмотреть избранное и прочитанное?.Напишите да или нет")
     if fav_or_readed == "нет":
         print("ok")
     elif fav_or_readed == "да":
-        ans = input('напишите "избранное" или "прочитанное"')
-        if ans == "избранное":
-            print(favourites)
-        else:
-            print(readed)
+        print(f"Избранное: {', '.join(favourites)}")
+        print(f"Прочитанное: {', '.join(readed)}")
+    else:
+        print("Да ты уже достал")
 
 
 # Ввод автора
